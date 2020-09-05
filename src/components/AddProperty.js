@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import Alert from './Alert';
+const axios = require('axios');
+
 
 const initialState = {
     fields: {
@@ -10,15 +13,36 @@ const initialState = {
       price: "",
       email: "",
     },
+    alert:{
+        message: "",
+        isSuccess: false,
+    }
   };
 
 const AddProperty = () => {
 
     const [fields, setFields] = useState(initialState.fields);
+    const [alert, setAlert] = useState(initialState.alert);
 
     const handleAddProperty = (event) => {
         event.preventDefault();
-        console.log(fields);
+        setAlert({ message: "", isSuccess: false });
+
+        axios.post('http://localhost:4000/api/v1/PropertyListing', fields)
+          .then(response =>{
+            setAlert({
+                message: "Property Added",
+                isSuccess: true,
+            })
+            console.log(response);
+          })
+          .catch(error =>{
+            setAlert({
+                message: "Server error. Please try again later.",
+                isSuccess: true,
+            })
+            console.log(error);
+          });
     };
 
     const handleFieldChange = (event) => {
@@ -28,6 +52,9 @@ const AddProperty = () => {
     return(
     <div className="AddProperty">Add a Property
             <form onSubmit={handleAddProperty}>
+                {alert.message && (
+                    <Alert message={alert.message} success={alert.isSuccess} />
+                )}
                 <label htmlFor="title">
                     Title <input id="title" name="title" value={fields.title} onChange={handleFieldChange}/>
                 </label>
@@ -69,7 +96,7 @@ const AddProperty = () => {
                     E-mail <input id="email" name="email" value={fields.email} onChange={handleFieldChange}/>
                 </label>
                 <br></br>
-                <button type="submit">Submit</button>
+                <button type="submit" onClick={handleAddProperty}>Submit</button>
             </form>
 
         </div>

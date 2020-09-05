@@ -14,7 +14,6 @@ function App() {
           <Route exact path="/" component={Properties} />
           <Route exact path="/AddProperty" component={AddProperty} />
         </Switch>
-        <h2>Surreal Estate</h2>
     </div>
   );
 }
